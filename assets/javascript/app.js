@@ -11,7 +11,7 @@ $(document).ready(function() {
     firebase.initializeApp(config);
 
     var database = firebase.database();
-    var options = ["Rock", "Paper", "Scissor", "Lizard", "Spock"];
+    var options = ["Rock", "Paper", "Scissors", "Lizard", "Spock"];
     var playerIntro = $("#playerIntro").hide();
     var ref; 
     var messageField;
@@ -26,7 +26,8 @@ function createButtons() {
 $("#startButton").on("click", function(event) {
     event.preventDefault();
     var name = $("#nameInput").val().trim();
-    var newPlayer = {
+    var newPlayer1 = {
+        status: null,
         name: name,
         gamesWon: 0,
         gamesLost: 0,
@@ -36,9 +37,9 @@ $("#startButton").on("click", function(event) {
     database.ref().push(newPlayer);
   });
 
-  database.ref().on("child_added", function(childSnapshot) {
-    console.log(childSnapshot.val());
-    var playerName = childSnapshot.val().name;
+  database.ref().on("child_added", function(snapshot) {
+    console.log(snapshot.val());
+    var playerName = snapshot.val().name;
     $("#playerOne").text(playerName);
 }, function(errorObject){
   console.log("You have an error: " + snapshot.val());
@@ -50,7 +51,7 @@ function sendChatMessage() {
 
     ref.push().set({
         name: firebase.auth().currentUser.displayName,
-        message: messageField.value
+        message: messageField.val()
     })
     ref.on("child_added", function(snapshot) {
         var message = snapshot.val();
